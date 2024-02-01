@@ -19,20 +19,21 @@ def get_events(rowcol_id, is_target):
     """
     Description
     -----------
+    This function identifies sample indices in which there are events. These events can either be targets or nontargets. 
 
     Parameters
     ----------
-    rowcol_id : TYPE
-        DESCRIPTION.
-    is_target : TYPE
-        DESCRIPTION.
+    rowcol_id : Nx1 array of integers, where N is the total number of samples
+        Input of current event type. Integers 1-6 correspond to the columns of the same number, 7-12 correspond to the rows numbered 1-6 in ascending order.
+    is_target : Nx1 Boolean array, where N is the total number of samples
+        Input of true when the row/column flashed contains the target letter, False otherwise. Serves as y axis (0 False, 1 True) for one of the subplots.
 
     Returns
     -------
-    event_sample : TYPE
-        DESCRIPTION.
-    is_target_event : TYPE
-        DESCRIPTION.
+    event_sample : Nx1 array of integers, where N is the number of samples in which an event occurred
+        This array contains all of the sample numbers at which an event, a target flash or nontarget flash, occurred.
+    is_target_event : Nx1 Boolean array, where N is the number of samples in which an event occurred
+        This array contains a Boolean value of the event type in each of the relevant indices determined via event_sample. is_target_event[index] is True in cases in which the event was a target, False in the case that the event was not a target.
 
     """
     # array event_sample of samples when event ID went upward
