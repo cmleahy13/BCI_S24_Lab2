@@ -6,6 +6,15 @@ Created on Mon Jan 29 23:16:04 2024
 @authors: Claire Leahy and Lexi Reinsborough
 """
 
+""" TODO:
+    
+    - documentation, commenting
+    - cleaning up, formatting
+    - ensuring variable names are intuitive
+    - improvements on helper script?
+    
+"""
+
 #%% Part 1: Load the Data
 
 # import statements
@@ -125,11 +134,12 @@ def get_erps(eeg_epochs, is_target_event):
     
     # separate epochs by target or nontarget event
     target_epochs = eeg_epochs[is_target_event]
+    # size (num_targets, samples, channels)
     nontarget_epochs = eeg_epochs[~is_target_event]
     
     # mean response on each channel for each event
-    target_erp = np.mean(target_epochs,axis=2)
-    nontarget_erp = np.mean(nontarget_epochs,axis=2)
+    target_erp = np.mean(target_epochs,axis=0)
+    nontarget_erp = np.mean(nontarget_epochs,axis=0)
     
     return target_erp, nontarget_erp
 
@@ -154,7 +164,35 @@ def plot_erps(target_erp, nontarget_erp, erp_times):
     None.
 
     """
-    # variables for looping
-    channel_count = len(target_erp[1]) # same as nontarget
     
-    # plot ERPs for target and nontarget trials on stacked for each channel
+    """ TODO:
+        
+        - plot labeling (axes, legends, titles, lines, etc.)
+        - adjust hard coding to make more flexible (i.e. channel_counter)
+        - save figure generated as .png?
+        
+    """
+    
+    # transpose the erp data to plot, matches average at that sample time to the size of the time array
+    target_erp_transpose = np.transpose(target_erp)
+    nontarget_erp_transpose = np.transpose(nontarget_erp)
+    
+    # plot ERPs for events for each channel
+    channel_counter = 0 # use to plot for each channel
+    fig, axs = plt.subplots(3,3)
+    axs[2][2].remove() # only 8 channels, 9th plot unnecessary
+   
+    while channel_counter < 7:
+        for row_index in range(3):
+            for column_index in range(3):
+                
+                # prevent access of nonexistent plot/channel
+                if (row_index & column_index) == 2: # 9th plot 
+                    channel_counter = 7 # exit plotting loops
+                
+                # plot target and nontarget erp data in the subplot
+                axs[row_index][column_index].plot(erp_times, target_erp_transpose[channel_counter])
+                axs[row_index][column_index].plot(erp_times, nontarget_erp_transpose[channel_counter])
+                channel_counter += 1
+    
+    

@@ -6,6 +6,15 @@ Created on Mon Jan 29 23:17:08 2024
 @authors: Claire Leahy and Lexi Reinsborough
 """
 
+""" TODO:
+    
+    - documentation, commenting
+    - cleaning up, formatting
+    - ensuring variable names are intuitive
+    - improvements on helper script?
+    
+"""
+
 #%% Part 1: Load the Data
 
 # import functions
@@ -33,10 +42,17 @@ target_erp, nontarget_erp = get_erps(eeg_epochs, is_target_event)
 #%% Part 5: Plot the ERPs
 
 # call plot_erps
-#plot_erps(target_erp, nontarget_erp, erp_times)
+plot_erps(target_erp, nontarget_erp, erp_times)
 
 #%% Part 6: Discuss the ERPs
 
+""" TODO:
+    
+    - uncomment, check calls are proper
+    - run code for all subjects
+    - answer questions
+    
+"""
 # # run code for subjects 3-10
 # for subject_index in range(3,11):
     
