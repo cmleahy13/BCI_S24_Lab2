@@ -165,34 +165,33 @@ def plot_erps(target_erp, nontarget_erp, erp_times):
 
     """
     
-    """ TODO:
-        
-        - plot labeling (axes, legends, titles, lines, etc.)
-        - adjust hard coding to make more flexible (i.e. channel_counter)
-        - save figure generated as .png?
-        
-    """
-    
     # transpose the erp data to plot, matches average at that sample time to the size of the time array
     target_erp_transpose = np.transpose(target_erp)
     nontarget_erp_transpose = np.transpose(nontarget_erp)
     
     # plot ERPs for events for each channel
-    channel_counter = 0 # use to plot for each channel
-    fig, axs = plt.subplots(3,3)
-    axs[2][2].remove() # only 8 channels, 9th plot unnecessary
+    channel_fig, channel_plots = plt.subplots(3,3, figsize=(10, 6))
+
+    channel_plots[2][2].remove()  # only 8 channels, 9th plot unnecessary
    
-    while channel_counter < 7:
-        for row_index in range(3):
-            for column_index in range(3):
-                
-                # prevent access of nonexistent plot/channel
-                if (row_index & column_index) == 2: # 9th plot 
-                    channel_counter = 7 # exit plotting loops
-                
-                # plot target and nontarget erp data in the subplot
-                axs[row_index][column_index].plot(erp_times, target_erp_transpose[channel_counter])
-                axs[row_index][column_index].plot(erp_times, nontarget_erp_transpose[channel_counter])
-                channel_counter += 1
-    
-    
+    for channel_index in range(8):
+        row_index, column_index = divmod(channel_index, 3)  # wrap around to column 0 for every 3 plots
+        channel_plot = channel_plots[row_index][column_index]
+        # plot dotted lines for time 0 and 0 voltage
+        channel_plot.axvline(0, color='black', linestyle='dotted')
+        channel_plot.axhline(0, color='black', linestyle='dotted')
+        # plot target and nontarget erp data in the subplot
+        target_handle, = channel_plot.plot(erp_times, target_erp_transpose[channel_index])
+        nontarget_handle, = channel_plot.plot(erp_times, nontarget_erp_transpose[channel_index])
+        # kind of a dodgy workaround so that the legend only displays each entry once.
+        if channel_index == 0:
+            target_handle.set_label('Target')
+            nontarget_handle.set_label('Nontarget')
+        # label each plot's axes and channel number
+        channel_plot.set_title(f'Channel {channel_index}')
+        channel_plot.set_xlabel('time from flash onset (s)')
+        channel_plot.set_ylabel('Voltage (μV)')
+    # big legend in the empty space left by nonexistent plot 9
+    channel_fig.legend(loc='lower right', fontsize='xx-large')
+    channel_fig.tight_layout()  # stop axis labels overlapping titles
+    plt.savefig('P300_channel_plots.png')  # save as image
