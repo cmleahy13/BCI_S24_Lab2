@@ -145,7 +145,7 @@ def get_erps(eeg_epochs, is_target_event):
 
 #%% Part 5: Plot the ERPs
 
-def plot_erps(target_erp, nontarget_erp, erp_times):
+def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
     """
     Description
     -----------
@@ -158,6 +158,8 @@ def plot_erps(target_erp, nontarget_erp, erp_times):
         DESCRIPTION.
     erp_times : TYPE
         DESCRIPTION.
+    subject (optional) : Integer
+        DESCRIPTION:
 
     Returns
     -------
@@ -206,10 +208,10 @@ def plot_erps(target_erp, nontarget_erp, erp_times):
         channel_plot.set_ylabel('Voltage (μV)')
     
     # formatting
-    channel_fig.suptitle('P300 Speller Training ERPs')
+    channel_fig.suptitle(f'P300 Speller S{subject} Training ERPs')
     channel_fig.legend(loc='lower right', fontsize='xx-large') # big legend in the empty space left by nonexistent plot 9
     channel_fig.tight_layout()  # stop axis labels overlapping titles
     
     
     # save image
-    plt.savefig('P300_channel_plots.png')  # save as image
+    plt.savefig(f'P300_S{subject}_channel_plots.png')  # save as image
