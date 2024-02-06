@@ -164,34 +164,52 @@ def plot_erps(target_erp, nontarget_erp, erp_times):
     None.
 
     """
+    """ TODO:
+        
+        - change figure file name and plot label to be specific to each subject
+        
+    """
     
     # transpose the erp data to plot, matches average at that sample time to the size of the time array
     target_erp_transpose = np.transpose(target_erp)
     nontarget_erp_transpose = np.transpose(nontarget_erp)
+    
+    # get channel count
+    channel_count = len(target_erp_transpose) # same as if nontargets were used
     
     # plot ERPs for events for each channel
     channel_fig, channel_plots = plt.subplots(3,3, figsize=(10, 6))
 
     channel_plots[2][2].remove()  # only 8 channels, 9th plot unnecessary
    
-    for channel_index in range(8):
+    for channel_index in range(channel_count):
+        
         row_index, column_index = divmod(channel_index, 3)  # wrap around to column 0 for every 3 plots
         channel_plot = channel_plots[row_index][column_index]
+        
         # plot dotted lines for time 0 and 0 voltage
         channel_plot.axvline(0, color='black', linestyle='dotted')
         channel_plot.axhline(0, color='black', linestyle='dotted')
+        
         # plot target and nontarget erp data in the subplot
         target_handle, = channel_plot.plot(erp_times, target_erp_transpose[channel_index])
         nontarget_handle, = channel_plot.plot(erp_times, nontarget_erp_transpose[channel_index])
+        
         # kind of a dodgy workaround so that the legend only displays each entry once.
         if channel_index == 0:
             target_handle.set_label('Target')
             nontarget_handle.set_label('Nontarget')
+        
         # label each plot's axes and channel number
         channel_plot.set_title(f'Channel {channel_index}')
         channel_plot.set_xlabel('time from flash onset (s)')
         channel_plot.set_ylabel('Voltage (μV)')
-    # big legend in the empty space left by nonexistent plot 9
-    channel_fig.legend(loc='lower right', fontsize='xx-large')
+    
+    # formatting
+    channel_fig.suptitle('P300 Speller Training ERPs')
+    channel_fig.legend(loc='lower right', fontsize='xx-large') # big legend in the empty space left by nonexistent plot 9
     channel_fig.tight_layout()  # stop axis labels overlapping titles
+    
+    
+    # save image
     plt.savefig('P300_channel_plots.png')  # save as image

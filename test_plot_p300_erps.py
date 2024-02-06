@@ -53,15 +53,15 @@ plot_erps(target_erp, nontarget_erp, erp_times)
     - answer questions
     
 """
-# # run code for subjects 3-10
-# for subject_index in range(3,11):
+# run code for subjects 3-10
+for subject_index in range(3,11):
     
-#     # call relevant functions
-#     eeg_time, eeg_data, rowcol_id, is_target = load_training_eeg(subject_index) # default path
-#     event_sample, is_target_event = get_events(rowcol_id, is_target)
-#     eeg_epochs, erp_times = epoch_data(eeg_time, eeg_data, event_sample, epoch_start_time=-0.5, epoch_end_time=1)
-#     target_erp, nontarget_erp = get_erps(eeg_epochs, is_target_event)
-#     plot_erps(target_erp, nontarget_erp, erp_times)
+    # call relevant functions
+    eeg_time, eeg_data, rowcol_id, is_target = load_training_eeg(subject_index) # default path
+    event_sample, is_target_event = get_events(rowcol_id, is_target)
+    eeg_epochs, erp_times = epoch_data(eeg_time, eeg_data, event_sample, epoch_start_time=-0.5, epoch_end_time=1)
+    target_erp, nontarget_erp = get_erps(eeg_epochs, is_target_event)
+    plot_erps(target_erp, nontarget_erp, erp_times)
     
 # """
 
