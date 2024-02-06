@@ -47,9 +47,7 @@ plot_erps(target_erp, nontarget_erp, erp_times)
 #%% Part 6: Discuss the ERPs
 
 """ TODO:
-    
-    - uncomment, check calls are proper
-    - run code for all subjects
+
     - answer questions
     
 """
@@ -63,12 +61,12 @@ for subject_index in range(3,11):
     target_erp, nontarget_erp = get_erps(eeg_epochs, is_target_event)
     plot_erps(target_erp, nontarget_erp, erp_times, subject_index)
     
-# """
+"""
 
-# 1.
-# 2.
-# 3.
-# 4. 
+1. Brainwaves have a general set frequency (for multiple waves that sum, each at a different frequency). Consequently, there will likely be a repetitive nature of baseline activity. Variation (i.e. peaks) may occur due to some change in activity, whether related to thought, motion, or other artifacts.
+2.
+3. These channels may be more involved in the processing of the information presented (target or nontarget)
+4. 
 
-# """
+"""
     

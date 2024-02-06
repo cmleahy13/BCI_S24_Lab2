@@ -11,7 +11,6 @@ Created on Mon Jan 29 23:16:04 2024
     - documentation, commenting
     - cleaning up, formatting
     - ensuring variable names are intuitive
-    - improvements on helper script?
     
 """
 
@@ -159,7 +158,7 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
     erp_times : TYPE
         DESCRIPTION.
     subject (optional) : Integer
-        DESCRIPTION:
+        DESCRIPTION: The default is 3.
 
     Returns
     -------
