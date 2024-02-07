@@ -3,15 +3,14 @@
 """
 Created on Mon Jan 29 23:16:04 2024
 
-@authors: Claire Leahy and Lexi Reinsborough
-"""
+plot_p300_erps.py
 
-""" TODO:
-    
-    - documentation, commenting
-    - cleaning up, formatting
-    - ensuring variable names are intuitive
-    
+@authors: Claire Leahy and Lexi Reinsborough
+
+This script, plot_p300_erps.py, is the module for Lab02 for BCIs S24. This file contains a series of functions that can help isolate EEG data based on event occurrences (i.e. flashes of a row or column). The first function, get_events, isolates when an event, target or nontarget, occurs. Using the returned data, the subsequent function epoch_data creates epochs, a sample range of data surrounding an event; for this particular case, the half-second leading up to an event and the second following event constitute the range of interest, and the EEG data in that range is gathered. Given the target data from get_events and the epochs from epoch_data, ERPs (event-related potentials) are calculated by taking the mean EEG voltages at each channel for a subject at an event (target or nontarget), as well as the times at which the ERPs occur. The data are subsequently plotted in plot_erps, where the whole plot represents a particular subject and each subplot depicts the ERPs for target and nontarget events at a particular channel.
+
+Sources and collaborators: N/A
+
 """
 
 #%% Part 1: Load the Data
@@ -154,6 +153,7 @@ def get_erps(eeg_epochs, is_target_event):
     # mean response on each channel for each event
     target_erp = np.mean(target_epochs,axis=0)
     nontarget_erp = np.mean(nontarget_epochs,axis=0)
+    
     return target_erp, nontarget_erp
 
 #%% Part 5: Plot the ERPs
