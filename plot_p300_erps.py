@@ -40,12 +40,13 @@ def get_events(rowcol_id, is_target):
     event_sample : Nx1 array of integers, where N is the number of samples in which an event occurred
         This array contains all of the sample numbers at which an event, a target flash or nontarget flash, occurred.
     is_target_event : Nx1 Boolean array, where N is the number of samples in which an event occurred
-        This array contains a Boolean value of the event type in each of the relevant indices determined via event_sample. is_target_event[index] is True in cases in which the event was a target, False in the case
-        that the event was not a target.
+        This array contains a Boolean value of the event type in each of the relevant indices determined via event_sample. is_target_event[index] is True in cases in which the event was a target, False in the case that the event was not a target.
 
     """
+    
     # array event_sample of samples when event ID went upward
     event_sample = np.where(np.diff(rowcol_id)>0)[0]+1 # index [0] accesses array from tuple
+    
     # is_target_event[i] is True if event i was a target event
     is_target_event = is_target[event_sample] 
     
@@ -59,36 +60,32 @@ def epoch_data(eeg_time, eeg_data, event_sample, epoch_start_time=-0.5, epoch_en
     Description
     -----------
     Collates EEG data into epochs, which are collections of data from specific time ranges around each P300 event.
-    Takes all the samples relative to each P300 Speller event's index (from event_sample) and stacks them next to each
-    other in an array so that all the events line up and we can compare data from before and after each one.
-    Also creates a lookup of the time offsets from each event to determine how far before or after an event any
-    given data point occurred.
+    Takes all the samples relative to each P300 Speller event's index (from event_sample) and stacks them next to each other in an array so that all the events line up and we can compare data from before and after each one.
+    Also creates a lookup of the time offsets from each event to determine how far before or after an event any given data point occurred.
 
     Parameters
     ----------
     eeg_time : Sx1 array of floats, where S is the total number of samples
         The time when each sample was recorded, in seconds.
     eeg_data : CxS array of floats, where C is the number of channels and S is the total number of samples
-        The recorded samples for each EEG channel, in microvolts.
+        The recorded samples for each EEG channel in microvolts.
     event_sample : Nx1 array of integers, where N is the number of samples in which an event occurred
         This array contains all of the sample indices at which an event occurred.
     epoch_start_time : float, optional
-        Beginning of relative range to collect samples around an event, in seconds. (-1.0 would be 1 second
-        before the event's onset). The default is -0.5.
+        Beginning of relative range to collect samples around an event, in seconds. (-1.0 would be 1 second before the event's onset). The default is -0.5.
     epoch_end_time : float, optional
         Ending of relative range. (1.0 would be 1 second after the event's onset). The default is 1.0.
 
     Returns
     -------
-    eeg_epochs : NxPxC array of floats, where N is the number of epochs, P is the number of samples in each epoch,
-                and C is the number of channels.
-        Each epoch corresponds to one sample in event_sample, and each epoch contains the data from before and after
-        each event from all C channels.
+    eeg_epochs : NxPxC array of floats, where N is the number of epochs, P is the number of samples in each epoch, and C is the number of channels.
+        Each epoch corresponds to one sample in event_sample, and each epoch contains the data from before and after each event from all C channels.
     erp_times : Px1 array of floats, where P is the number of samples in each epoch
-        The time offsets at which any given sample in eeg_epochs occurred relative to its corresponding event onset,
-        along dimension 1.
+        The time offsets at which any given sample in eeg_epochs occurred relative to its corresponding event onset, along dimension 1.
+        
     """
     
+    # find size of each dimension for eeg_epochs 
     # number of epochs (dimension 0)
     epoch_count = len(event_sample)
     # samples per epoch (dimension 1)
@@ -98,20 +95,20 @@ def epoch_data(eeg_time, eeg_data, event_sample, epoch_start_time=-0.5, epoch_en
     # number of channels (dimension 2)
     channel_count = len(eeg_data)
     
-    # generate array to contain epoched data
+    # declare array to contain epoched data
     eeg_epochs = np.zeros((epoch_count, samples_per_epoch, channel_count))
-
     # load epochs into array
     for epoch_index in range(epoch_count): 
         for channel_index in range(channel_count):
-            start_offset = int(event_sample[epoch_index]+(epoch_start_time*samples_per_second))
+            start_offset = int(event_sample[epoch_index]+(epoch_start_time*samples_per_second)) # samples to go back before event
             for sample_index in range(samples_per_epoch):
-                raw_sample = sample_index + start_offset
+                raw_sample = sample_index + start_offset # sample number at the start of the epoch (not event)
                 eeg_epochs[epoch_index, sample_index, channel_index] = eeg_data[channel_index, raw_sample]
     
-    # create erp_times variable
+    # declare array to contain times of event-related potentials (ERPs)
     erp_times = []
-    for time_index in range(int(samples_per_epoch)): # stops 1 sample before 1s after event
+    # load in times in seconds for each sample in the epoch 
+    for time_index in range(int(samples_per_epoch)):
         erp_times.append(epoch_start_time+(time_index*(1/samples_per_second)))
     
     return eeg_epochs, erp_times
@@ -122,19 +119,14 @@ def get_erps(eeg_epochs, is_target_event):
     """
     Description
     -----------
-    Separate data from events which are target events (i.e. the flash was of the correct row or column) and ones which
-    are not, then take the mean for each channel and sample position for each of these new separated datasets.
+    Separate data from events which are target events (i.e. the flash was of the correct row or column) and ones which are not, then take the mean for each channel and sample position for each of these new separated datasets.
 
     Parameters
     ----------
-    eeg_epochs : NxPxC array of floats, where N is the number of epochs, P is the number of samples in each epoch,
-                and C is the number of channels.
-        Each epoch corresponds to one sample in event_sample, and each epoch contains the data from before and after
-        each event from all C channels.
+    eeg_epochs : NxPxC array of floats, where N is the number of epochs, P is the number of samples in each epoch, and C is the number of channels
+        Each epoch corresponds to one sample in event_sample, and each epoch contains the data from before and after each event from all C channels.
     is_target_event : Nx1 Boolean array, where N is the number of samples in which an event occurred
-       This array contains a Boolean value of the event type in each of the relevant indices determined via
-       event_sample. is_target_event[index] is True in cases in which the event was a target, False in the case that
-       the event was not a target.
+       This array contains a Boolean value of the event type in each of the relevant indices determined via event_sample. is_target_event[index] is True in cases in which the event was a target, False in the case that the event was not a target.
 
     Returns
     -------
@@ -146,9 +138,8 @@ def get_erps(eeg_epochs, is_target_event):
     """
     
     # separate epochs by target or nontarget event
-    target_epochs = eeg_epochs[is_target_event]
-    # size (num_targets, samples, channels)
-    nontarget_epochs = eeg_epochs[~is_target_event]
+    target_epochs = eeg_epochs[is_target_event] # (target_count, samples_per_epoch, channel_count)
+    nontarget_epochs = eeg_epochs[~is_target_event] # (nontarget_count, samples_per_epoch, channel_count)
     
     # mean response on each channel for each event
     target_erp = np.mean(target_epochs,axis=0)
@@ -162,7 +153,7 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
     """
     Description
     -----------
-    Transforms mean channel data into 8 matplotlib plots and saves them in a png image.
+    Transforms mean channel data into 8 matplotlib plots and saves them in a .png image.
 
     Parameters
     ----------
@@ -171,9 +162,8 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
     nontarget_erp : PxC array of floats, where P is the number of samples in each epoch, and C is the number of channels
         Mean values where the epoch doesn't correspond to a target event.
      erp_times : Px1 array of floats, where P is the number of samples in each epoch
-        The time offsets at which any given sample in eeg_epochs occurred relative to its corresponding event onset,
-        along dimension 1.
-    subject (optional) : int
+        The time offsets at which any given sample in eeg_epochs occurred relative to its corresponding event onset, along dimension 1.
+    subject : int, optional
         index of the subject which the data comes from. used only for labeling plot and filename of output. The default is 3.
 
     Returns
@@ -190,7 +180,7 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
     channel_count = len(target_erp_transpose) # same as if nontargets were used
     
     # plot ERPs for events for each channel
-    channel_fig, channel_plots = plt.subplots(3,3, figsize=(10, 6))
+    figure, channel_plots = plt.subplots(3,3, figsize=(10, 6))
 
     channel_plots[2][2].remove()  # only 8 channels, 9th plot unnecessary
    
@@ -207,7 +197,7 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
         target_handle, = channel_plot.plot(erp_times, target_erp_transpose[channel_index])
         nontarget_handle, = channel_plot.plot(erp_times, nontarget_erp_transpose[channel_index])
         
-        # workaround so that the legend only displays each entry once
+        # workaround for legend to only display each entry once
         if channel_index == 0:
             target_handle.set_label('Target')
             nontarget_handle.set_label('Nontarget')
@@ -218,10 +208,11 @@ def plot_erps(target_erp, nontarget_erp, erp_times, subject=3):
         channel_plot.set_ylabel('Voltage (μV)')
     
     # formatting
-    channel_fig.suptitle(f'P300 Speller S{subject} Training ERPs')
-    channel_fig.legend(loc='lower right', fontsize='xx-large') # legend in space of nonexistent plot 9
-    channel_fig.tight_layout()  # stop axis labels overlapping titles
+    figure.suptitle(f'P300 Speller S{subject} Training ERPs')
+    figure.legend(loc='lower right', fontsize='xx-large') # legend in space of nonexistent plot 9
+    figure.tight_layout()  # stop axis labels overlapping titles
     
     
     # save image
     plt.savefig(f'P300_S{subject}_channel_plots.png')  # save as image
+    

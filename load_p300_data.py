@@ -34,20 +34,20 @@ def load_training_eeg(subject=3, data_directory='P300Data/'): # default values f
     
     Parameters
     ----------
-    subject (Optional) : Integer
+    subject (Optional) : int
         Input to define the subject number to be evaluated. The default is 3.
-    data_directory (Optional) : String
+    data_directory (Optional) : str
         Input string directory to the location of the data files. The default is 'P300Data/'.
     
     Returns
     -------
-    eeg_time : Array of floats, 61866x1 (number of samples)
+    eeg_time : Array of float, size Sx1, where S is the number of samples
         Time of the sample in seconds.
-    eeg_data : Array of floats, , 8x61866 (number of EEG channels by number of samples)
+    eeg_data : Array of float, size CxS , where C is the number of channels and S is the number of samples.
         Raw electroencephalography (EEG) data in uV.
-    rowcol_id : Array of integers, 61866x1 (number of samples)
+    rowcol_id : Array of integers, size Sx1, where S is the number of samples
         Current event type. Integers 1-6 correspond to the rows of the same number, 7-12 correspond to the columns numbered 1-6 in ascending order.
-    is_target : Array of boolean, 61866x1 (number of samples)
+    is_target : Array of Boolean, size Sx1, where S is the number of samples
         True when the row/column flashed contains the target letter, False otherwise.
         
     """

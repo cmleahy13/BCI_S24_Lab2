@@ -3,16 +3,16 @@
 """
 Created on Mon Jan 29 23:17:08 2024
 
+test_plot_p300_erps.py
+
 @authors: Claire Leahy and Lexi Reinsborough
+
+test_plot_p300_erps.py is the test script for Lab02 for BCIs S24. This script first loads relevant functions from the module script as well as a helper script from Lab01, load_p300_data.py. The vast majority of the script involves loading, extracting, and plotting data related to subject 3 using the written functions. Specific functionality of each function is detailed in the module script. At the end of the script, the data are evaluated for subjects 3-10, and a series of questions about the event-related potentials (ERPs) and their signficance in the electroencephalography (EEG) data are answered.
+
+Sources and collaborators: N/A
+
 """
 
-""" TODO:
-    
-    - documentation, commenting
-    - cleaning up, formatting
-    - ensuring variable names are intuitive
-    
-"""
 
 #%% Part 1: Load the Data
 
@@ -21,26 +21,26 @@ from load_p300_data import load_training_eeg
 from plot_p300_erps import get_events, epoch_data, get_erps, plot_erps
 
 # load training data from subject 3
-eeg_time, eeg_data, rowcol_id, is_target = load_training_eeg() # defaulting subject 3, P300Data directory
+eeg_time, eeg_data, rowcol_id, is_target = load_training_eeg() # default subject 3, P300Data directory
 
 #%% Part 2: Extract the Event Times and Labels
 
-# call get_events(rowcol_id, is_target)
+# call get_events to identify samples where events occurred and if the event was a target event
 event_sample, is_target_event = get_events(rowcol_id, is_target)
 
 #%% Part 3: Extract the Epochs
 
-# call epoch_data
+# call epoch_data to get the EEG data over the epoch and the corresponding times
 eeg_epochs, erp_times = epoch_data(eeg_time, eeg_data, event_sample, epoch_start_time=-0.5, epoch_end_time=1)
 
 #%% Part 4: Calculate the ERPs
 
-# call get_erps
+# call get_erps to calculate mean EEG signals for the target and nontarget events
 target_erp, nontarget_erp = get_erps(eeg_epochs, is_target_event)
 
 #%% Part 5: Plot the ERPs
 
-# call plot_erps
+# call plot_erps to plot the ERP data
 plot_erps(target_erp, nontarget_erp, erp_times)
 
 #%% Part 6: Discuss the ERPs
