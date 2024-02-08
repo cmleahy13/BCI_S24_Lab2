@@ -63,7 +63,7 @@ for subject_index in range(3,11):
     
 2. Why are they more pronounced in some channels but not others?
 
-    Consistency may have occurred in some channels more than others due to the relevance, or lack thereof, to the assignment at hand. For example, the central channel is located in an area that may be more closely linked to motor control compared with language, so while the proximity of the electrodes causes the overall activity to likely have extensive effects, behavior that is less concerned with the task (language, counting, concentrating, etc.) may be more rhythmic.
+    Consistency may have occurred in some channels more than others due to the relevance, or lack thereof, to the assignment at hand. For example, the central channel is located in an area that may be more closely linked to motor control compared with language, so while the proximity of the electrodes causes the overall activity to likely have extensive effects, behavior that is less concerned with the task may be more rhythmic.
 
 3. Why does the voltage on some of the channels have a positive peak around half a second after a target flash?
     
