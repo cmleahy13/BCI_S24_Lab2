@@ -119,7 +119,7 @@ def get_erps(eeg_epochs, is_target_event):
     """
     Description
     -----------
-    Separate data from events which are target events (i.e. the flash was of the correct row or column) and ones which are not, then take the mean for each channel and sample position for each of these new separated datasets.
+    Separate data from events which are target events (i.e. the flash was of the correct row or column) and ones which are not, then take the mean voltage for each channel and sample position for each of these new separated datasets.
 
     Parameters
     ----------
